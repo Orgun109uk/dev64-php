@@ -1,0 +1,5 @@
+.vagrant
+packer
+packer_cache
+data/*.box
+workspace
