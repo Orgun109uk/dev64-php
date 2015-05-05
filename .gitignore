@@ -1,5 +1,5 @@
-.vagrant
-packer
-packer_cache
-data/*.box
-workspace
+/.vagrant
+/packer
+/packer_cache
+/data/*.box
+/workspace
