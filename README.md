@@ -17,18 +17,18 @@ In order to build and run this development environment there are a few requireme
 
 The VM build provides the following tools preloaded:
 
-  - [GIT]
+  - [GIT] - Standard ubuntu package
   - [Cloud9 IDE] - A fully loaded web based IDE with full debugging features
   - [NVM] - Node version managment tool
   - [Node.js] - 0.12
-  - [PHP]
-  - [Apache]
-  - [XDebug]
-  - [MySQL]
-  - [Memcache]
-  - [SSMSTP]
-  - [Adminer]
-  - [MailDev]
+  - [PHP] - Standard ubuntu package
+  - [Apache] - Standard ubuntu package
+  - [XDebug] - Standard ubuntu package
+  - [MySQL] - Standard ubuntu package
+  - [Memcached] - Standard ubuntu package
+  - [SSMTP] - Standard ubuntu package
+  - [Adminer] - 4.2.1 (MySQL)
+  - [MailDev] - Standard NPM package
 
 ### Build
 
@@ -58,19 +58,27 @@ $ vagrant ssh
 
 For more information on using [Packer] and [Vagrant] please visit the respective sites, they provide very details documents and there is plenty of information around on the web ;)
 
-### Access and tools details
+### Private IP, Shared folder and Tools
 
-The default user account for the VM is *vagrant* and the password is also *vagrant*, and the following are the default properties setup in the Vagrantfile (these can be changed if required by editing the Vagrantfile):
+The following are the default properties setup in the Vagrantfile (these can be changed if required by editing the Vagrantfile):
 
   - 1 CPU
   - 1024 MB RAM
   - Private network IP - 192.168.200.101
   - Shared folder is *workspace* which points to ~/workspace within the guest VM.
 
+Symlinking has been enabled for the shared folder, however for windows this will require granting access to create symlinks via the policy tool or running the terminal as an administrator.
+
 Access to the web tools can be accessed via:
+
   - Cloud9 IDE: http://192.168.200.101:8181
   - Adminer (DB): http://192.168.200.101:8081
   - MailDev (Mail SMTP): http://192.168.200.101:1080
+
+### Credentials
+
+  - Ubuntu: vagrant - vagrant
+  - MySQL: root - vagrant
 
 ** Happy developing. **
 
@@ -86,3 +94,11 @@ Access to the web tools can be accessed via:
 [mongodb]:http://mongodb.org/
 [mongo express]:https://www.npmjs.com/package/mongo-express
 [maildev]:https://www.npmjs.com/package/maildev
+[php]:https://php.net/
+[apache]:http://www.apache.org/
+[xdebug]:http://xdebug.org/
+[mysql]:https://www.mysql.com/
+[memcached]:http://memcached.org/
+[ssmtp]:https://wiki.archlinux.org/index.php/SSMTP
+[adminer]:http://www.adminer.org/
+[maildev]:https://github.com/djfarrelly/maildev/
