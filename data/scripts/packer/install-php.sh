@@ -1,9 +1,6 @@
 #!/bin/bash -e
 
-CONFD="/home/vagrant/conf"
 MYSQLPASSWD="vagrant"
-
-mkdir $CONFD
 
 #######################################################################################################################
 # Install MySQL.
@@ -27,13 +24,6 @@ echo "connect_timeout = 10" >> /etc/mysql/conf.d/performance.conf
 echo "skip-locking" >> /etc/mysql/conf.d/performance.conf
 echo "skip-name-resolve" >> /etc/mysql/conf.d/performance.conf
 echo "" >> /etc/mysql/conf.d/performance.conf
-
-chmod 667 /etc/mysql/my.cnf
-chmod 667 /etc/mysql/conf.d -R
-
-mkdir $CONFD/mysql
-ln -s /etc/mysql/my.cnf $CONFD/mysql/my.cnf
-ln -s /etc/mysql/conf.d $CONFD/mysql/conf.d
 
 #######################################################################################################################
 # Install Apache.
@@ -64,12 +54,6 @@ echo "</IfModule>" >> /etc/apache2/apache2.conf
 sed -i.bak 's|^LogLevel = warn|LogLevel = error|' /etc/apache2/apache2.conf
 sed -i.bak 's|^KeepAliveTimeout = 5|KeepAliveTimeout = 15|' /etc/apache2/apache2.conf
 
-chmod 667 /etc/apache2/apache2.conf
-chmod 667 /etc/apache2/sites-enabled -R
-mkdir $CONFD/apache2
-ln -s /etc/apache2/apache2.conf $CONFD/apache2/apache2.conf
-ln -s /etc/apache2/sites-enabled $CONFD/apache2/sites-enabled
-
 #######################################################################################################################
 # Install PHP.
 apt-get install -y php5 php5-dev php5-gd php5-mcrypt php5-cli php5-curl php5-mysql php5-xmlrpc libapache2-mod-php5 php5-xdebug
@@ -79,6 +63,16 @@ sed -i.bak 's|^display_errors = Off|display_errors = On|' /etc/php5/apache2/php.
 sed -i.bak 's|^display_startup_errors = Off|display_startup_errors = On|' /etc/php5/apache2/php.ini
 sed -i.bak 's|^max_execution_time = 30|max_execution_time = 240|' /etc/php5/apache2/php.ini
 sed -i.bak 's|^memory_limit = 128M|memory_limit = 1024M|' /etc/php5/apache2/php.ini
+sed -i.bak 's|^;error_log = syslog|error_log = syslog|' /etc/php5/apache2/php.ini
+sed -i.bak 's|^;mail_log = syslog|mail_log = syslog|' /etc/php5/apache2/php.ini
+
+sed -i.bak 's|^error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT|error_reporting = E_ALL|' /etc/php5/cli/php.ini
+sed -i.bak 's|^display_errors = Off|display_errors = On|' /etc/php5/cli/php.ini
+sed -i.bak 's|^display_startup_errors = Off|display_startup_errors = On|' /etc/php5/cli/php.ini
+sed -i.bak 's|^max_execution_time = 30|max_execution_time = 240|' /etc/php5/cli/php.ini
+sed -i.bak 's|^memory_limit = 128M|memory_limit = 1024M|' /etc/php5/cli/php.ini
+sed -i.bak 's|^;error_log = syslog|error_log = syslog|' /etc/php5/cli/php.ini
+sed -i.bak 's|^;mail_log = syslog|mail_log = syslog|' /etc/php5/cli/php.ini
 
 echo "opcache.enable = 0" >> /etc/php5/mods-available/opcache.ini
 echo "opcache.enable_cli = 0" >> /etc/php5/mods-available/opcache.ini
@@ -98,12 +92,6 @@ echo "xdebug.remote_connect_back = 1" >> /etc/php5/apache2/conf.d/xdebug.ini
 echo "xdebug.idekey = \"dev64-php-xdebug\"" >> /etc/php5/apache2/conf.d/xdebug.ini
 echo "xdebug.max_nesting_level = 200" >> /etc/php5/apache2/conf.d/xdebug.ini
 
-chmod 667 /etc/php5/apache2/php.ini
-chmod 667 /etc/php5/cli/php.ini
-mkdir $CONFD/php5
-ln -s /etc/php5/apache2/php.ini $CONFD/php5/apache2.ini
-ln -s /etc/php5/cli/php.ini $CONFD/php5/cli.ini
-
 #######################################################################################################################
 # Install Memcache.
 apt-get install -y php5-memcached memcached
@@ -111,10 +99,6 @@ apt-get install -y php5-memcached memcached
 sed -i.bak 's|^-m = 64|-m 1024|' /etc/memcached.conf
 echo "" >> /etc/memcached.conf
 echo "-I 32M" >> /etc/memcached.conf
-
-chmod 667 /etc/memcached.conf
-mkdir $CONFD/memcached
-ln -s /etc/memcached.conf $CONFD/memcached/memcached.conf
 
 #######################################################################################################################
 # Setup the SSL keys.
@@ -125,19 +109,15 @@ make-ssl-cert generate-default-snakeoil --force-overwrite
 # http://askubuntu.com/a/368046
 apt-get -y install ssmtp
 
-sed -i.bak 's|^;mailhub=mail|mailhub=0.0.0.0:1025|' /etc/ssmtp/ssmtp.conf
+sed -i.bak 's|^mailhub=mail|mailhub=0.0.0.0:1025|' /etc/ssmtp/ssmtp.conf
 
 sed -i.bak 's|^;sendmail_path =|sendmail_path = /usr/sbin/sendmail -t|' /etc/php5/apache2/php.ini
 sed -i.bak 's|^;sendmail_path =|sendmail_path = /usr/sbin/sendmail -t|' /etc/php5/cli/php.ini
 
-chmod 667 /etc/ssmtp/ssmtp.conf
-mkdir $CONFD/ssmtp
-ln -s /etc/ssmtp/ssmtp.conf $CONFD/ssmtp/ssmtp.conf
-
 #######################################################################################################################
 # Install the Adminer.
 echo "Download the Adminer script..."
-wget http://downloads.sourceforge.net/adminer/adminer-4.1.0-mysql.php
+wget http://downloads.sourceforge.net/adminer/adminer-4.2.1-mysql.php
 
 echo "Setup the Adminer www root..."
 mkdir /var/www/adminer
@@ -158,8 +138,8 @@ echo "  </Directory>" >> /etc/apache2/sites-enabled/adminer.conf
 echo "</VirtualHost>" >> /etc/apache2/sites-enabled/adminer.conf
 echo "" >> /etc/apache2/sites-enabled/adminer.conf
 
-echo "" >> /etc/apach2/ports.conf
-echo "Listen 8081" >> /etc/apach2/ports.conf
+echo "" >> /etc/apache2/ports.conf
+echo "Listen 8081" >> /etc/apache2/ports.conf
 
 a2dissite default
 
