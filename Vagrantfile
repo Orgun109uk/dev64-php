@@ -22,5 +22,5 @@ Vagrant.configure("2") do |config|
   config.vm.network "public_network"
   config.vm.usable_port_range = (10200..10500)
 
-  config.vm.provision :shell, path: "./data/scripts/vagrant/startup.sh", run: "always", privileged: true
+  config.vm.provision :shell, path: "./data/scripts/vagrant/startup.sh", run: "always"
 end
