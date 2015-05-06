@@ -1,5 +1,9 @@
 {
   "provisioners": [{
+    "type": "file",
+    "source": "data/files/bash-git.sh",
+    "destination": "/tmp/bash-git.sh"
+  }, {
     "type": "shell",
     "execute_command": "echo 'vagrant'|sudo -S sh '{{.Path}}'",
     "scripts": [

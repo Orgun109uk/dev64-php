@@ -13,9 +13,13 @@ echo "export NVM_DIR=\"${NVM_DIR}\"" >> /root/.bashrc
 echo "[ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"" >> /root/.bashrc
 echo "" >> /root/.bashrc
 
-chown vagrant:vagrant $NVM_DIR -R
 nvm install 0.12
 nvm alias default 0.12
+
+chown vagrant:vagrant $NVM_DIR -R
+
+chown vagrant:vagrant /home/vagrant/.npm -R
+chown vagrant:vagrant /home/vagrant/.npm/_locks -R
 
 #################################################
 # Install MailDev
